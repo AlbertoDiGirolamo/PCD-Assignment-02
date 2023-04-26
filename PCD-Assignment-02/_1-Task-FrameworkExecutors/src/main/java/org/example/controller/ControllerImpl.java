@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import org.example.model.MasterThread;
+import org.example.model.Folder;
 import org.example.model.Model;
 import org.example.utils.Pair;
 import org.example.utils.ComputedFile;
@@ -11,7 +11,7 @@ import java.io.File;
 public class ControllerImpl implements Controller{
     private final Model model;
     private final View view;
-    private MasterThread masterThread;
+
 
     public ControllerImpl(Model model, View view){
         this.model = model;
@@ -22,8 +22,6 @@ public class ControllerImpl implements Controller{
     @Override
     public void start(int numberOfWorkers, String path, int topN, int maxL, int numIntervals) {
         this.model.setup(topN, maxL, numIntervals);
-        masterThread = new MasterThread(path, numberOfWorkers, this);
-        masterThread.start();
     }
 
     @Override
@@ -42,7 +40,7 @@ public class ControllerImpl implements Controller{
 
     @Override
     public void stop() {
-        this.masterThread.interrupt();
+
     }
 
     @Override

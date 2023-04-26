@@ -11,6 +11,7 @@ public class ModelImpl implements Model{
 
     public void setup(int limit, int maxL, int numIntervals) {
         this.results = new ComputedFileImpl(limit, maxL, numIntervals);
+
     }
 
     @Override
