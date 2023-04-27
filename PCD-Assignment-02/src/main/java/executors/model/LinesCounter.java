@@ -3,7 +3,9 @@
  * http://www.oracle.com/technetwork/articles/java/fork-join-422606.html
  * 
  */
-package org.example.model;
+package executors.model;
+
+import executors.utils.SynchronizedList;
 
 import java.util.concurrent.ForkJoinPool;
 
@@ -11,8 +13,8 @@ public class LinesCounter {
 
     private final ForkJoinPool forkJoinPool = new ForkJoinPool();
 
-    public Long countOccurrencesInParallel(Folder folder, String searchedWord) {
-        return forkJoinPool.invoke(new FolderSearchTask(this, folder, searchedWord));
+    public SynchronizedList countOccurrencesInParallel(Folder folder) {
+        return forkJoinPool.invoke(new FolderSearchTask(folder));
     }
 
 }

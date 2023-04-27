@@ -1,11 +1,13 @@
-package org.example;
+package executors;
 
-import org.example.controller.Controller;
-import org.example.controller.ControllerImpl;
-import org.example.model.Model;
-import org.example.model.ModelImpl;
-import org.example.view.ConsoleView;
-import org.example.view.View;
+
+
+import executors.controller.Controller;
+import executors.controller.ControllerImpl;
+import executors.model.Model;
+import executors.model.ModelImpl;
+import executors.view.ConsoleView;
+import executors.view.View;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +17,7 @@ public class Main {
 
     public static final int NUMBER_OF_WORKERS = Runtime.getRuntime().availableProcessors();
     static Controller controller;
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         final Model model = new ModelImpl();
         final View view = new ConsoleView();
         controller = new ControllerImpl(model, view);
@@ -23,9 +25,9 @@ public class Main {
         setupConsole();
     }
 
-    private static void setupConsole() throws IOException {
+    private static void setupConsole() throws IOException, InterruptedException {
 
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Inserisci il path: ");
         String path = bufferedReader.readLine();
         System.out.println("Inserisci il numero di file da visualizzare nella classifica: ");
@@ -34,7 +36,7 @@ public class Main {
         int maxL = Integer.parseInt(bufferedReader.readLine());
         System.out.println("Inserisci il numero di intervalli: ");
         int numIntervals = Integer.parseInt(bufferedReader.readLine());
-        
-        controller.start(NUMBER_OF_WORKERS, path, limit, maxL, numIntervals);
+        */
+        controller.start("./file", 10, 10, 10);
     }
 }

@@ -1,4 +1,4 @@
-package org.example.model;
+package executors.model;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,18 +9,14 @@ import java.util.List;
 
 public class Document {
 
-	private static long numLines;
+	private int numLines;
     private File file;
     
     public Document(File file) {
         this.file = file;
     }
-    public Long getNumLines(){
-        return numLines;
-    }
 
-    
-    public void countNumLines() throws IOException {
+    public int countNumLines() {
         BufferedReader reader;
         try {
         	reader = new BufferedReader(new FileReader(this.file));
@@ -29,11 +25,17 @@ public class Document {
                 numLines++;
                 line = reader.readLine();
             }
+            return numLines;
         } catch (Exception ex){
         	ex.printStackTrace();
         }
+        return 0;
     }
     public static Document fromFile(File file) throws IOException {
         return new Document(file);
+    }
+
+    public String getPath(){
+        return this.file.getPath();
     }
 }

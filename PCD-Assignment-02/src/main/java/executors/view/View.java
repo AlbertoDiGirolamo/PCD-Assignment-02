@@ -1,6 +1,7 @@
-package org.example.view;
+package executors.view;
 
-import org.example.controller.Controller;
+
+import executors.controller.Controller;
 
 public interface View {
     void setController(Controller controller);
