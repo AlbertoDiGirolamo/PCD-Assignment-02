@@ -1,17 +1,13 @@
-package executors.view;
+package vertx.view;
 
-import executors.controller.Controller;
-import executors.utils.ComputedFileImpl;
-import executors.utils.Pair;
+import vertx.controller.Controller;
+import vertx.utils.Pair;
 
-import javax.swing.*;
-import java.io.File;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ConsoleView implements View{
+public class ConsoleView implements View {
     private Controller controller;
 
     @Override

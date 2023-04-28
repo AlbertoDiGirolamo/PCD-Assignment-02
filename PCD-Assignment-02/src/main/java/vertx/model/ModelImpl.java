@@ -1,13 +1,10 @@
-package executors.model;
+package vertx.model;
 
-import executors.utils.ComputedFileImpl;
-import executors.utils.Pair;
-import executors.utils.SynchronizedList;
+import vertx.utils.ComputedFileImpl;
+import vertx.utils.Pair;
+import vertx.utils.SynchronizedList;
 
-import static java.util.Collections.reverseOrder;
-import static java.util.Comparator.comparing;
-
-public class ModelImpl implements Model{
+public class ModelImpl implements Model {
     private ComputedFileImpl results;
 
     public void setup(int limit, int maxL, int numIntervals) {

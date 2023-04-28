@@ -1,13 +1,13 @@
-package executors;
+package vertx;
 
 
 
-import executors.controller.Controller;
-import executors.controller.ControllerImpl;
-import executors.model.Model;
-import executors.model.ModelImpl;
-import executors.view.ConsoleView;
-import executors.view.View;
+import vertx.controller.Controller;
+import vertx.controller.ControllerImpl;
+import vertx.model.Model;
+import vertx.model.ModelImpl;
+import vertx.view.ConsoleView;
+import vertx.view.View;
 
 import java.io.IOException;
 

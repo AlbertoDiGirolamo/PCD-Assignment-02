@@ -1,10 +1,6 @@
-package executors.utils;
+package vertx.utils;
 
-import java.io.File;
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparing;

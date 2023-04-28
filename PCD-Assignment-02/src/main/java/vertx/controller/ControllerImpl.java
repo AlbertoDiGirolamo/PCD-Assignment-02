@@ -1,13 +1,11 @@
-package executors.controller;
+package vertx.controller;
 
-import executors.SourceAnalyser;
-import executors.model.Folder;
-import executors.model.LinesCounter;
-import executors.model.Model;
-import executors.utils.ComputedFileImpl;
-import executors.utils.Pair;
-import executors.utils.SynchronizedList;
-import executors.view.View;
+import vertx.SourceAnalyser;
+import vertx.model.Model;
+import vertx.utils.ComputedFileImpl;
+import vertx.utils.Pair;
+import vertx.utils.SynchronizedList;
+import vertx.view.View;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +25,9 @@ public class ControllerImpl implements Controller, SourceAnalyser {
     @Override
     public void getReport(String path, int topN, int maxL, int numIntervals) throws IOException {
         this.model.setup(topN, maxL, numIntervals);
-        Folder folder = Folder.fromDirectory(new File(path));
-        LinesCounter lc = new LinesCounter();
-        results = lc.countOccurrencesInParallel(folder);
+
+
+
         this.model.addResults(results);
         this.endComputation();
     }
