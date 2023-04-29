@@ -1,6 +1,9 @@
 package vertx.controller;
 
+import io.vertx.core.Vertx;
 import vertx.SourceAnalyser;
+import vertx.model.Folder;
+import vertx.model.FolderSearchAgent;
 import vertx.model.Model;
 import vertx.utils.ComputedFileImpl;
 import vertx.utils.Pair;
@@ -25,11 +28,27 @@ public class ControllerImpl implements Controller, SourceAnalyser {
     @Override
     public void getReport(String path, int topN, int maxL, int numIntervals) throws IOException {
         this.model.setup(topN, maxL, numIntervals);
+        Folder folder = Folder.fromDirectory(new File(path));
+
+        Vertx vertx = Vertx.vertx();
+        vertx.deployVerticle(new FolderSearchAgent(folder, this, vertx), res -> {
+            this.endComputation();
+        });
 
 
 
-        this.model.addResults(results);
-        this.endComputation();
+
+    }
+
+    @Override
+    public void analyzeSources(String path, int topN, int maxL, int numIntervals) throws IOException {
+        this.model.setup(topN, maxL, numIntervals);
+        Folder folder = Folder.fromDirectory(new File(path));
+
+        Vertx vertx = Vertx.vertx();
+        vertx.deployVerticle(new FolderSearchAgent(folder, this, vertx), res -> {
+            this.endComputation();
+        });
     }
 
     @Override
@@ -37,12 +56,23 @@ public class ControllerImpl implements Controller, SourceAnalyser {
         return this.model.getResult();
     }
 
-    public void addResult(Pair<String, Integer> result) {
+    public void addResult(Pair<String, Integer> result) throws InterruptedException {
         this.model.getResult().add(result);
+        this.view.resultsUpdated();
     }
     @Override
     public void endComputation() {
         this.view.endComputation();
+    }
+
+    @Override
+    public void stop() {
+    }
+
+    @Override
+    public void start(int numberOfWorkers, String path, int topN, int maxL, int numIntervals) {
+        this.model.setup(topN, maxL, numIntervals);
+
     }
 
 }

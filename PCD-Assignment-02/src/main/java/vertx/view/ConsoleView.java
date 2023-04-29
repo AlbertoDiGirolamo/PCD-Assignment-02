@@ -29,6 +29,7 @@ public class ConsoleView implements View {
         for(Map.Entry<Pair<Integer, Integer>, Integer> p : filesInRange.entrySet()) {
             System.out.println(p.getKey().getX()+"-"+p.getKey().getY()+": "+p.getValue());
         }
+
     }
 
     @Override
