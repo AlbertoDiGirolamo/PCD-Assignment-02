@@ -7,23 +7,26 @@ import executors.controller.ControllerImpl;
 import executors.model.Model;
 import executors.model.ModelImpl;
 import executors.view.ConsoleView;
+import executors.view.GuiView;
 import executors.view.View;
 
+
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class Main {
 
     public static final int NUMBER_OF_WORKERS = Runtime.getRuntime().availableProcessors();
     static Controller controller;
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
         final Model model = new ModelImpl();
-        final View view = new ConsoleView();
+        final View view = new GuiView();
         controller = new ControllerImpl(model, view);
 
-        setupConsole();
+        //setupConsole();
     }
 
-    private static void setupConsole() throws IOException, InterruptedException {
+    private static void setupConsole() throws IOException, InterruptedException, ExecutionException {
 
         /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Inserisci il path: ");
@@ -36,6 +39,6 @@ public class Main {
         int numIntervals = Integer.parseInt(bufferedReader.readLine());
         */
 
-        controller.getReport("./file", 3, 40, 3);
+        controller.getReport("./fileExample", 3, 40, 3);
     }
 }

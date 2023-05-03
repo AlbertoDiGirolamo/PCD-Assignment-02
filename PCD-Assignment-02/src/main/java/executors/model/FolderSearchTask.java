@@ -1,5 +1,6 @@
 package executors.model;
 
+import executors.controller.Controller;
 import executors.utils.Pair;
 import executors.utils.SynchronizedList;
 
@@ -9,10 +10,12 @@ import java.util.concurrent.RecursiveTask;
 
 public class FolderSearchTask extends RecursiveTask<SynchronizedList> {
     private final Folder folder;
+    private Controller controller;
 
-    public FolderSearchTask(Folder folder) {
+    public FolderSearchTask(Folder folder, Controller controller) {
         super();
         this.folder = folder;
+        this.controller = controller;
     }
     
     @Override
@@ -23,7 +26,7 @@ public class FolderSearchTask extends RecursiveTask<SynchronizedList> {
         SynchronizedList results = new SynchronizedList();
 
         for (Folder subFolder : folder.getSubFolders()) {
-            FolderSearchTask task = new FolderSearchTask(subFolder);
+            FolderSearchTask task = new FolderSearchTask(subFolder, controller);
             SubfolderForks.add(task);
             task.fork();
         }
@@ -35,13 +38,21 @@ public class FolderSearchTask extends RecursiveTask<SynchronizedList> {
         }
 
         for (RecursiveTask<Pair<String, Integer>> task : DocumentsForks) {
-            results.add(task.join());
+            Pair<String, Integer> file = task.join();
+            results.add(file);
+            try {
+                controller.addResult(file);
+                //Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         for (RecursiveTask<SynchronizedList> task : SubfolderForks) {
             results.addAll(task.join());
         }
 
+        //this.cancel(false);
         return results;
     }
 }

@@ -41,8 +41,8 @@ public class ComputedFileImpl {
         return computedFiles;
     }
 
-    public Set<Pair<String, Integer>> getRanking() {
-        return ranking;
+    public List<Pair<String, Integer>> getRanking() {
+        return this.ranking.stream().limit(this.limit).collect(Collectors.toList());
     }
 
     public Map<Pair<Integer, Integer>, Integer> getFilesInRange() {

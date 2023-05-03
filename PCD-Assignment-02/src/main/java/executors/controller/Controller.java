@@ -5,9 +5,14 @@ import executors.utils.ComputedFileImpl;
 import executors.utils.Pair;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public interface Controller {
-    void getReport(String path, int topN, int maxL, int numIntervals) throws IOException;
+    void getReport(String path, int topN, int maxL, int numIntervals) throws IOException, ExecutionException, InterruptedException;
+    void analyzeSources(String path, int topN, int maxL, int numIntervals) throws IOException;
     ComputedFileImpl getResult();
-    void endComputation();
+
+    void addResult(Pair<String, Integer> file) throws InterruptedException;
+
+    void stop();
 }

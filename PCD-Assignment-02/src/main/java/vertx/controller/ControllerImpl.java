@@ -36,8 +36,6 @@ public class ControllerImpl implements Controller, SourceAnalyser {
         });
 
 
-
-
     }
 
     @Override

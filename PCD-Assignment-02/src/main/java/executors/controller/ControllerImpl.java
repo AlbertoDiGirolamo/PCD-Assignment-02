@@ -2,7 +2,7 @@ package executors.controller;
 
 import executors.SourceAnalyser;
 import executors.model.Folder;
-import executors.model.LinesCounter;
+import executors.model.FolderSearchTask;
 import executors.model.Model;
 import executors.utils.ComputedFileImpl;
 import executors.utils.Pair;
@@ -11,12 +11,15 @@ import executors.view.View;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
 
 public class ControllerImpl implements Controller, SourceAnalyser {
     private final Model model;
     private final View view;
-
-    SynchronizedList results = new SynchronizedList();
+    Future<SynchronizedList> results;
+    private final ForkJoinPool forkJoinPool = new ForkJoinPool();
 
     public ControllerImpl(Model model, View view){
         this.model = model;
@@ -25,13 +28,20 @@ public class ControllerImpl implements Controller, SourceAnalyser {
     }
 
     @Override
-    public void getReport(String path, int topN, int maxL, int numIntervals) throws IOException {
+    public void getReport(String path, int topN, int maxL, int numIntervals) throws IOException, ExecutionException, InterruptedException {
         this.model.setup(topN, maxL, numIntervals);
         Folder folder = Folder.fromDirectory(new File(path));
-        LinesCounter lc = new LinesCounter();
-        results = lc.countOccurrencesInParallel(folder);
+        results = forkJoinPool.submit(new FolderSearchTask(folder, this));
         this.model.addResults(results);
-        this.endComputation();
+        this.view.endComputation();
+    }
+
+    @Override
+    public void analyzeSources(String path, int topN, int maxL, int numIntervals) throws IOException {
+        this.model.setup(topN, maxL, numIntervals);
+        Folder folder = Folder.fromDirectory(new File(path));
+        forkJoinPool.submit(new FolderSearchTask(folder, this));
+
     }
 
     @Override
@@ -39,12 +49,17 @@ public class ControllerImpl implements Controller, SourceAnalyser {
         return this.model.getResult();
     }
 
-    public void addResult(Pair<String, Integer> result) {
-        this.model.getResult().add(result);
-    }
     @Override
-    public void endComputation() {
-        this.view.endComputation();
+    public void addResult(Pair<String, Integer> result) throws InterruptedException {
+        this.model.getResult().add(result);
+        this.view.resultsUpdated();
+
     }
+
+    @Override
+    public void stop() {
+        //forkJoinPool.shutdownNow();
+    }
+
 
 }

@@ -4,6 +4,9 @@ import executors.utils.ComputedFileImpl;
 import executors.utils.Pair;
 import executors.utils.SynchronizedList;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparing;
 
@@ -15,8 +18,8 @@ public class ModelImpl implements Model{
     }
 
     @Override
-    public void addResults(SynchronizedList results) {
-        for (Pair<String,Integer> result : results.getResults()) {
+    public void addResults(Future<SynchronizedList> results) throws ExecutionException, InterruptedException {
+        for (Pair<String,Integer> result : results.get().getResults()) {
             this.results.add(result);
         }
     }
