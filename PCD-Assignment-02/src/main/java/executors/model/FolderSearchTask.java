@@ -6,9 +6,11 @@ import executors.utils.SynchronizedList;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.RecursiveTask;
 
-public class FolderSearchTask extends RecursiveTask<SynchronizedList> {
+public class FolderSearchTask extends RecursiveTask<Future<SynchronizedList>> {
     private final Folder folder;
     private Controller controller;
 
@@ -19,11 +21,11 @@ public class FolderSearchTask extends RecursiveTask<SynchronizedList> {
     }
     
     @Override
-    protected SynchronizedList compute() {
+    protected Future<SynchronizedList> compute() {
         List<RecursiveTask<Pair<String, Integer>>> DocumentsForks = new LinkedList<>();
-        List<RecursiveTask<SynchronizedList>> SubfolderForks = new LinkedList<>();
+        List<RecursiveTask<Future<SynchronizedList>>> SubfolderForks = new LinkedList<>();
 
-        SynchronizedList results = new SynchronizedList();
+        Future<SynchronizedList> results = new SynchronizedList();
 
         for (Folder subFolder : folder.getSubFolders()) {
             FolderSearchTask task = new FolderSearchTask(subFolder, controller);
@@ -39,17 +41,26 @@ public class FolderSearchTask extends RecursiveTask<SynchronizedList> {
 
         for (RecursiveTask<Pair<String, Integer>> task : DocumentsForks) {
             Pair<String, Integer> file = task.join();
-            results.add(file);
             try {
+                results.get().add(file);
+
                 controller.addResult(file);
-                //Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
             }
+
         }
 
-        for (RecursiveTask<SynchronizedList> task : SubfolderForks) {
-            results.addAll(task.join());
+        for (RecursiveTask<Future<SynchronizedList>> task : SubfolderForks) {
+            try {
+                results.get().addAll(task.join().get());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         //this.cancel(false);

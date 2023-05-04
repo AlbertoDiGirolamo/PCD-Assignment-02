@@ -19,7 +19,7 @@ public class ControllerImpl implements Controller, SourceAnalyser {
     private final Model model;
     private final View view;
     Future<SynchronizedList> results;
-    private final ForkJoinPool forkJoinPool = new ForkJoinPool();
+    private ForkJoinPool forkJoinPool = new ForkJoinPool();
 
     public ControllerImpl(Model model, View view){
         this.model = model;
@@ -31,8 +31,8 @@ public class ControllerImpl implements Controller, SourceAnalyser {
     public void getReport(String path, int topN, int maxL, int numIntervals) throws IOException, ExecutionException, InterruptedException {
         this.model.setup(topN, maxL, numIntervals);
         Folder folder = Folder.fromDirectory(new File(path));
-        results = forkJoinPool.submit(new FolderSearchTask(folder, this));
-        this.model.addResults(results);
+        forkJoinPool.submit(new FolderSearchTask(folder, this)).join().get();
+        //this.model.addResults(results);
         this.view.endComputation();
     }
 
@@ -50,7 +50,7 @@ public class ControllerImpl implements Controller, SourceAnalyser {
     }
 
     @Override
-    public void addResult(Pair<String, Integer> result) throws InterruptedException {
+    public synchronized void addResult(Pair<String, Integer> result) throws InterruptedException {
         this.model.getResult().add(result);
         this.view.resultsUpdated();
 
@@ -58,7 +58,8 @@ public class ControllerImpl implements Controller, SourceAnalyser {
 
     @Override
     public void stop() {
-        //forkJoinPool.shutdownNow();
+        forkJoinPool.shutdownNow();
+        forkJoinPool = new ForkJoinPool();
     }
 
 

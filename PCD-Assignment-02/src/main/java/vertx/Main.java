@@ -10,7 +10,9 @@ import vertx.view.ConsoleView;
 import vertx.view.GuiView;
 import vertx.view.View;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
 
@@ -26,7 +28,7 @@ public class Main {
 
     private static void setupConsole() throws IOException, InterruptedException {
 
-        /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Inserisci il path: ");
         String path = bufferedReader.readLine();
         System.out.println("Inserisci il numero di file da visualizzare nella classifica: ");
@@ -35,8 +37,8 @@ public class Main {
         int maxL = Integer.parseInt(bufferedReader.readLine());
         System.out.println("Inserisci il numero di intervalli: ");
         int numIntervals = Integer.parseInt(bufferedReader.readLine());
-        */
 
-        controller.getReport("./file", 3, 40, 3);
+
+        controller.getReport(path, limit, maxL, numIntervals);
     }
 }
