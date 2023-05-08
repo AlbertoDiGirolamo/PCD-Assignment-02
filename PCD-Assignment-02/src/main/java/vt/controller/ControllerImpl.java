@@ -83,7 +83,7 @@ public class ControllerImpl implements Controller, SourceAnalyser {
 
     @Override
     public void stop() {
-        initThread.stop();
+        
     }
 
     public void endComputation(){
