@@ -19,19 +19,19 @@ public class FolderSearchAgent extends AbstractVerticle {
     }
 
     public void start(Promise<Void> startPromise) {
-        log("started.");
 
         for (Folder subFolder : folder.getSubFolders()) {
             FolderSearchAgent folderSearchAgent = new FolderSearchAgent(subFolder, controller, vertx);
-
             vertx.deployVerticle(folderSearchAgent);
         }
 
         for (Document document : folder.getDocuments()) {
             DocumentCountLinesAgent documentCountLinesAgent = new DocumentCountLinesAgent(document, controller);
-
             vertx.deployVerticle(documentCountLinesAgent);
         }
+
+        EventBus eb = this.getVertx().eventBus();
+        eb.publish("my-topic", "test");
 
         startPromise.complete();
 

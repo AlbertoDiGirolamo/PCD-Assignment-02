@@ -1,24 +1,23 @@
-package vertx;
+package vt;
 
 
-
-import vertx.controller.Controller;
-import vertx.controller.ControllerImpl;
-import vertx.model.Model;
-import vertx.model.ModelImpl;
-import vertx.view.ConsoleView;
-import vertx.view.GuiView;
-import vertx.view.View;
+import vt.controller.Controller;
+import vt.controller.ControllerImpl;
+import vt.model.Model;
+import vt.model.ModelImpl;
+import vt.view.ConsoleView;
+import vt.view.View;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class Main {
 
-    public static final int NUMBER_OF_WORKERS = Runtime.getRuntime().availableProcessors();
     static Controller controller;
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
         final Model model = new ModelImpl();
         final View view = new ConsoleView();
         controller = new ControllerImpl(model, view);
@@ -26,7 +25,7 @@ public class Main {
         setupConsole();
     }
 
-    private static void setupConsole() throws IOException, InterruptedException {
+    private static void setupConsole() throws IOException, InterruptedException, ExecutionException {
 
         /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Inserisci il path: ");
@@ -36,9 +35,12 @@ public class Main {
         System.out.println("Inserisci il numero max di linee: ");
         int maxL = Integer.parseInt(bufferedReader.readLine());
         System.out.println("Inserisci il numero di intervalli: ");
-        int numIntervals = Integer.parseInt(bufferedReader.readLine());
-*/
+        int numIntervals = Integer.parseInt(bufferedReader.readLine());*/
 
-        controller.getReport("./fileExample", 10, 1000, 10);
+
+        //controller.getReport(path, limit, maxL, numIntervals);
+        controller.getReport("./fileExample", 10, 1000, 10).get();
+        controller.endComputation();
+
     }
 }

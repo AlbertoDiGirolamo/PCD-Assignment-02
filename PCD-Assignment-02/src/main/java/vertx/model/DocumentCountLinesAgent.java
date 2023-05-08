@@ -14,11 +14,7 @@ public class DocumentCountLinesAgent extends AbstractVerticle {
         this.document = document;
     }
     public void start(Promise<Void> startPromise) throws InterruptedException {
-        Thread.sleep(500);
         controller.addResult(new Pair<>(document.getPath(), document.countNumLines()));
-
-
-
         startPromise.complete();
     }
     private void log(String msg) {

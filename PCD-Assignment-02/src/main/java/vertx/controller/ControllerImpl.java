@@ -1,6 +1,7 @@
 package vertx.controller;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.EventBus;
 import vertx.SourceAnalyser;
 import vertx.model.Folder;
 import vertx.model.FolderSearchAgent;
@@ -31,10 +32,15 @@ public class ControllerImpl implements Controller, SourceAnalyser {
         Folder folder = Folder.fromDirectory(new File(path));
 
         Vertx vertx = Vertx.vertx();
-        vertx.deployVerticle(new FolderSearchAgent(folder, this, vertx), res -> {
-            this.endComputation();
-        });
 
+        FolderSearchAgent folderSearchAgent = new FolderSearchAgent(folder, this, vertx);
+
+        vertx.deployVerticle(folderSearchAgent);
+
+        EventBus eb = vertx.eventBus();
+        eb.consumer("my-topic", message -> {
+            this.view.endComputation();
+        });
 
     }
 
@@ -44,9 +50,7 @@ public class ControllerImpl implements Controller, SourceAnalyser {
         Folder folder = Folder.fromDirectory(new File(path));
 
         Vertx vertx = Vertx.vertx();
-        vertx.deployVerticle(new FolderSearchAgent(folder, this, vertx), res -> {
-            this.endComputation();
-        });
+        vertx.deployVerticle(new FolderSearchAgent(folder, this, vertx), res -> this.view.endComputation());
     }
 
     @Override

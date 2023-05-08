@@ -43,7 +43,6 @@ public class FolderSearchTask extends RecursiveTask<Future<SynchronizedList>> {
             Pair<String, Integer> file = task.join();
             try {
                 results.get().add(file);
-
                 controller.addResult(file);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
