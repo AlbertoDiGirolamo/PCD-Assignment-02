@@ -20,7 +20,7 @@ public class ControllerImpl implements Controller, SourceAnalyser {
     private final Model model;
     private final View view;
     Future<SynchronizedList> results;
-    private ForkJoinPool forkJoinPool = new ForkJoinPool();
+    private Thread initThread = null;
 
     public ControllerImpl(Model model, View view){
         this.model = model;
@@ -45,7 +45,7 @@ public class ControllerImpl implements Controller, SourceAnalyser {
                 throw new RuntimeException(e);
             }
         });
-        //this.model.addResults(results);
+
         return computationEnd;
 
     }
@@ -54,8 +54,19 @@ public class ControllerImpl implements Controller, SourceAnalyser {
     public void analyzeSources(String path, int topN, int maxL, int numIntervals) throws IOException {
         this.model.setup(topN, maxL, numIntervals);
         Folder folder = Folder.fromDirectory(new File(path));
-        forkJoinPool.submit(new FolderSearchVT(folder, this));
 
+        Thread.ofVirtual().start(() -> {
+
+            try {
+                initThread = Thread.ofVirtual().unstarted(new FolderSearchVT(folder, this));
+                initThread.start();
+                initThread.join();
+
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        //this.model.addResults(results);
     }
 
     @Override
@@ -72,8 +83,7 @@ public class ControllerImpl implements Controller, SourceAnalyser {
 
     @Override
     public void stop() {
-        forkJoinPool.shutdownNow();
-        forkJoinPool = new ForkJoinPool();
+        initThread.stop();
     }
 
     public void endComputation(){

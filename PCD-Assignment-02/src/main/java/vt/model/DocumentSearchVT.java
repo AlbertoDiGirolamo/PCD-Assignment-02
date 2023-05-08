@@ -23,6 +23,7 @@ public class DocumentSearchVT implements Runnable {
     public void run() {
         try {
             this.controller.addResult(new Pair<>(this.document.getPath(), this.document.countNumLines()));
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

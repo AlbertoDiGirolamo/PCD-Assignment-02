@@ -6,6 +6,7 @@ import vt.controller.ControllerImpl;
 import vt.model.Model;
 import vt.model.ModelImpl;
 import vt.view.ConsoleView;
+import vt.view.GuiView;
 import vt.view.View;
 
 import java.io.BufferedReader;
@@ -19,10 +20,10 @@ public class Main {
     static Controller controller;
     public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
         final Model model = new ModelImpl();
-        final View view = new ConsoleView();
+        final View view = new GuiView();
         controller = new ControllerImpl(model, view);
 
-        setupConsole();
+        //setupConsole();
     }
 
     private static void setupConsole() throws IOException, InterruptedException, ExecutionException {

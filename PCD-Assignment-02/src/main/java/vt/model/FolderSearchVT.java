@@ -36,6 +36,12 @@ public class FolderSearchVT implements Runnable{
 
         for (Document document : folder.getDocuments()) {
             Thread documentThread = Thread.ofVirtual().unstarted(new DocumentSearchVT(document, controller));
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             documentThread.start();
             threads.add(documentThread);
         }
