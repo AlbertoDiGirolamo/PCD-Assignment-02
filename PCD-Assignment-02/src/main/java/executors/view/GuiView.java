@@ -24,7 +24,7 @@ public class GuiView implements View{
         final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         this.frame.setTitle("Source Tracker");
-        this.frame.setSize(800, 500);
+        this.frame.setSize(1000, 800);
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.frame.setLocationRelativeTo(null);
         this.frame.setResizable(false);

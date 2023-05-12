@@ -1,15 +1,15 @@
-package vertx.view;
+package reactive.view;
 
-import vertx.controller.Controller;
-import vertx.utils.Pair;
+
+import reactive.controller.Controller;
+import reactive.utils.Pair;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class GuiView implements View{
+public class GuiView implements View {
     private Controller controller;
     private JList<Pair<String, Integer>> rankingList = new JList<>();
     private final JList<String> distributionList = new JList<>();
@@ -66,16 +66,13 @@ public class GuiView implements View{
             btnStart.setEnabled(false);
             btnStop.setEnabled(true);
 
-
             try {
                 this.controller.analyzeSources(txtDirectory.getText(), Integer.parseInt(txtNFiles.getText()), Integer.parseInt(txtLastInterval.getText()), Integer.parseInt(txtIntervals.getText()));
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
 
-
             this.rankingList.setModel(new DefaultListModel<>());
-
 
             this.rankingList.setSize(100, 50);
             this.rankingList.setAutoscrolls(true);

@@ -1,15 +1,13 @@
-package executors;
+package reactive;
 
 
-
-import executors.controller.Controller;
-import executors.controller.ControllerImpl;
-import executors.model.Model;
-import executors.model.ModelImpl;
-import executors.view.ConsoleView;
-import executors.view.GuiView;
-import executors.view.View;
-
+import reactive.controller.Controller;
+import reactive.controller.ControllerImpl;
+import reactive.model.Model;
+import reactive.model.ModelImpl;
+import reactive.view.ConsoleView;
+import reactive.view.GuiView;
+import reactive.view.View;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +16,6 @@ import java.util.concurrent.ExecutionException;
 
 public class Main {
 
-    public static final int NUMBER_OF_WORKERS = Runtime.getRuntime().availableProcessors();
     static Controller controller;
     public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
         final Model model = new ModelImpl();
@@ -30,7 +27,7 @@ public class Main {
 
     private static void setupConsole() throws IOException, InterruptedException, ExecutionException {
 
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Inserisci il path: ");
         String path = bufferedReader.readLine();
         System.out.println("Inserisci il numero di file da visualizzare nella classifica: ");
@@ -40,7 +37,7 @@ public class Main {
         System.out.println("Inserisci il numero di intervalli: ");
         int numIntervals = Integer.parseInt(bufferedReader.readLine());
 
-
-        controller.getReport(path, limit, maxL, numIntervals);
+        controller.getReport(path, limit, maxL, numIntervals);*/
+        controller.getReport("./fileExample", 10, 1000, 10);
     }
 }

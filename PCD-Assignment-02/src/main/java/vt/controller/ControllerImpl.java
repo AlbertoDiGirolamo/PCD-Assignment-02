@@ -56,7 +56,6 @@ public class ControllerImpl implements Controller, SourceAnalyser {
         Folder folder = Folder.fromDirectory(new File(path));
 
         Thread.ofVirtual().start(() -> {
-
             try {
                 initThread = Thread.ofVirtual().unstarted(new FolderSearchVT(folder, this));
                 initThread.start();
@@ -66,7 +65,6 @@ public class ControllerImpl implements Controller, SourceAnalyser {
                 throw new RuntimeException(e);
             }
         });
-        //this.model.addResults(results);
     }
 
     @Override
@@ -83,7 +81,7 @@ public class ControllerImpl implements Controller, SourceAnalyser {
 
     @Override
     public void stop() {
-        
+
     }
 
     public void endComputation(){
