@@ -1,15 +1,9 @@
 package vt.model;
 
 import vt.controller.Controller;
-import vt.utils.Pair;
-import vt.utils.SynchronizedList;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.RecursiveTask;
 
 public class FolderSearchVT implements Runnable{
     private final Folder folder;
@@ -36,12 +30,6 @@ public class FolderSearchVT implements Runnable{
 
         for (Document document : folder.getDocuments()) {
             Thread documentThread = Thread.ofVirtual().unstarted(new DocumentSearchVT(document, controller));
-            /*try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }*/
-
             documentThread.start();
             threads.add(documentThread);
         }

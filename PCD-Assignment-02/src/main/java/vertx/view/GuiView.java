@@ -5,7 +5,6 @@ import vertx.utils.Pair;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -114,6 +113,11 @@ public class GuiView implements View{
 
     @Override
     public void endComputation() {
+
+    }
+
+    @Override
+    public void startConsole() throws IOException {
 
     }
 

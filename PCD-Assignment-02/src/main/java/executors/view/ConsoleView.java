@@ -1,15 +1,15 @@
 package executors.view;
 
 import executors.controller.Controller;
-import executors.utils.ComputedFileImpl;
 import executors.utils.Pair;
 
-import javax.swing.*;
-import java.io.File;
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class ConsoleView implements View{
     private Controller controller;
@@ -37,5 +37,19 @@ public class ConsoleView implements View{
 
     @Override
     public void resultsUpdated() throws InterruptedException {
+    }
+
+    public void startConsole() throws IOException, ExecutionException, InterruptedException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Inserisci il path: ");
+        String path = bufferedReader.readLine();
+        System.out.println("Inserisci il numero di file da visualizzare nella classifica: ");
+        int limit = Integer.parseInt(bufferedReader.readLine());
+        System.out.println("Inserisci il numero max di linee: ");
+        int maxL = Integer.parseInt(bufferedReader.readLine());
+        System.out.println("Inserisci il numero di intervalli: ");
+        int numIntervals = Integer.parseInt(bufferedReader.readLine());
+
+        controller.getReport(path, limit, maxL, numIntervals);
     }
 }

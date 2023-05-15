@@ -62,7 +62,6 @@ public class FolderSearchTask extends RecursiveTask<Future<SynchronizedList>> {
             }
         }
 
-        //this.cancel(false);
         return results;
     }
 }

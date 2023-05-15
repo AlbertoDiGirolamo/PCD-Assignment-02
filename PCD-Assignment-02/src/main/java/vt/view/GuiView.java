@@ -7,6 +7,7 @@ import vt.utils.Pair;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class GuiView implements View {
@@ -110,9 +111,10 @@ public class GuiView implements View {
     }
 
     @Override
-    public void endComputation() {
+    public void endComputation() {}
 
-    }
+    @Override
+    public void startConsole() throws IOException, ExecutionException, InterruptedException {}
 
     @Override
     public void resultsUpdated() throws InterruptedException {

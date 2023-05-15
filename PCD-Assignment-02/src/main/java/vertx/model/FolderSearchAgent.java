@@ -12,6 +12,8 @@ public class FolderSearchAgent extends AbstractVerticle {
     private Controller controller;
     Vertx  vertx;
 
+    int numAgent =0;
+
     public FolderSearchAgent(Folder folder, Controller controller, Vertx vertx) {
         this.folder = folder;
         this.controller = controller;
@@ -20,24 +22,29 @@ public class FolderSearchAgent extends AbstractVerticle {
 
     public void start(Promise<Void> startPromise) {
 
+        numAgent += folder.getSubFolders().size();
+        numAgent += folder.getDocuments().size();
+
         for (Folder subFolder : folder.getSubFolders()) {
             FolderSearchAgent folderSearchAgent = new FolderSearchAgent(subFolder, controller, vertx);
-            vertx.deployVerticle(folderSearchAgent);
+            vertx.deployVerticle(folderSearchAgent).onComplete(event ->{
+                numAgent--;
+                if(numAgent == 0){
+                    startPromise.complete();
+                }
+            });
         }
 
         for (Document document : folder.getDocuments()) {
             DocumentCountLinesAgent documentCountLinesAgent = new DocumentCountLinesAgent(document, controller);
-            vertx.deployVerticle(documentCountLinesAgent);
+            vertx.deployVerticle(documentCountLinesAgent).onComplete(event ->{
+                numAgent--;
+                if(numAgent == 0){
+                    startPromise.complete();
+                }
+            });
         }
 
-        EventBus eb = this.getVertx().eventBus();
-        eb.publish("my-topic", "test");
-
-        startPromise.complete();
-
     }
 
-    private void log(String msg) {
-        System.out.println("[FolderSearchAgent]["+Thread.currentThread()+"] " + msg);
-    }
 }

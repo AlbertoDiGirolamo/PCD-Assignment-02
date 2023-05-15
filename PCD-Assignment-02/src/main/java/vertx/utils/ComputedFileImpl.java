@@ -34,10 +34,6 @@ public class ComputedFileImpl {
         }
     }
 
-    public List<Pair<String, Integer>> getComputedFiles() {
-        return computedFiles;
-    }
-
     public List<Pair<String, Integer>> getRanking() {
         return this.ranking.stream().limit(this.limit).collect(Collectors.toList());
     }

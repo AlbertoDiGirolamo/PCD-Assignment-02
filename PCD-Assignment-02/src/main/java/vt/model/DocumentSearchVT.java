@@ -5,8 +5,6 @@ package vt.model;
 import vt.controller.Controller;
 import vt.utils.Pair;
 
-import java.util.concurrent.RecursiveTask;
-
 public class DocumentSearchVT implements Runnable {
     
 	private final Document document;
