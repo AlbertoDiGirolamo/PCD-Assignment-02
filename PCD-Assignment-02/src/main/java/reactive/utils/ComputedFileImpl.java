@@ -8,11 +8,9 @@ import static java.util.Comparator.comparing;
 
 public class ComputedFileImpl {
 
-    List<Pair<String, Integer>> computedFiles = new ArrayList<>();
     final Comparator<Pair<String, Integer>> comparator = reverseOrder(comparing(Pair::getY));
     private final Set<Pair<String, Integer>> ranking = new TreeSet<>(comparator);
     private final Map<Pair<Integer, Integer>, Integer> filesInRange = new HashMap<>();
-
     int limit;
     public ComputedFileImpl(int limit, int maxL, int numIntervals) {
         this.limit = limit;
@@ -32,10 +30,6 @@ public class ComputedFileImpl {
                 filesInRange.replace(p, c+1);
             }
         }
-    }
-
-    public List<Pair<String, Integer>> getComputedFiles() {
-        return computedFiles;
     }
 
     public List<Pair<String, Integer>> getRanking() {

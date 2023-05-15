@@ -7,6 +7,7 @@ import reactive.utils.Pair;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class GuiView implements View {
@@ -66,11 +67,18 @@ public class GuiView implements View {
             btnStart.setEnabled(false);
             btnStop.setEnabled(true);
 
-            try {
-                this.controller.analyzeSources(txtDirectory.getText(), Integer.parseInt(txtNFiles.getText()), Integer.parseInt(txtLastInterval.getText()), Integer.parseInt(txtIntervals.getText()));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            this.controller.analyzeSources(txtDirectory.getText(), Integer.parseInt(txtNFiles.getText()), Integer.parseInt(txtLastInterval.getText()), Integer.parseInt(txtIntervals.getText())).subscribe((results) -> {
+                DefaultListModel<Pair<String, Integer>> rankingModel = new DefaultListModel<>();
+                rankingModel.addAll(results.getRanking());
+
+
+                DefaultListModel<String> intervalsModel = new DefaultListModel<>();
+                intervalsModel.addAll(results.getFilesInRange().entrySet().stream().map(f->f.getKey().getX()+"-"+f.getKey().getY()+": "+f.getValue()).collect(Collectors.toList()));
+
+                SwingUtilities.invokeLater(() -> rankingList.setModel(rankingModel));
+                SwingUtilities.invokeLater(() -> distributionList.setModel(intervalsModel));
+
+            });
 
             this.rankingList.setModel(new DefaultListModel<>());
 
@@ -110,20 +118,8 @@ public class GuiView implements View {
     }
 
     @Override
-    public void endComputation() {
+    public void startConsole() throws IOException, ExecutionException, InterruptedException {
 
     }
 
-    @Override
-    public void resultsUpdated() throws InterruptedException {
-        DefaultListModel<Pair<String, Integer>> rankingModel = new DefaultListModel<>();
-        rankingModel.addAll(this.controller.getResult().getRanking());
-
-        DefaultListModel<String> intervalsModel = new DefaultListModel<>();
-        intervalsModel.addAll(this.controller.getResult().getFilesInRange().entrySet().stream().map(e->e.getKey().getX()+"-"+e.getKey().getY()+": "+e.getValue()).collect(Collectors.toList()));
-
-        SwingUtilities.invokeLater(() -> rankingList.setModel(rankingModel));
-        SwingUtilities.invokeLater(() -> distributionList.setModel(intervalsModel));
-
-    }
 }
