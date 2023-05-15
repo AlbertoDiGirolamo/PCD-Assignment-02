@@ -63,7 +63,6 @@ public class GuiView implements View {
         });
 
         btnStart.addActionListener(e -> {
-
             btnStart.setEnabled(false);
             btnStop.setEnabled(true);
 

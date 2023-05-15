@@ -34,13 +34,6 @@ public class Controller implements SourceAnalyser {
             this.view.endComputation();
         });
 
-
-
-        /*EventBus eb = vertx.eventBus();
-        eb.consumer("my-topic", message -> {
-            this.view.endComputation();
-        });*/
-
     }
 
     @Override

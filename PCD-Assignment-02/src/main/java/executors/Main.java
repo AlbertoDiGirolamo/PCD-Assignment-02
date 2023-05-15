@@ -17,10 +17,10 @@ public class Main {
     static Controller controller;
     public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
         final Model model = new ModelImpl();
-        final View view = new ConsoleView();
+        final View view = new GuiView();
         controller = new Controller(model, view);
 
-        view.startConsole();
+        //view.startConsole();
     }
 
 }

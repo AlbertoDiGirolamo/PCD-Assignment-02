@@ -36,7 +36,7 @@ public class Controller implements SourceAnalyser {
 
     @Override
     public Flowable<ComputedFileImpl> analyzeSources(String path, int topN, int maxL, int numIntervals){
-       // this.model.resetStopExecution();
+        this.model.resetStop();
         ComputedFileImpl result = new ComputedFileImpl(topN, maxL, numIntervals);
 
         return this.analyzeFolder(path)
@@ -58,13 +58,13 @@ public class Controller implements SourceAnalyser {
     private Flowable<Folder> getSubFolders(Folder folder){
         return Flowable
                 .fromIterable(folder.getSubFolders())
-                //.skipWhile(af -> this.model.getStopExecution().get())
+                .skipWhile(af -> this.model.getStop().get())
                 .flatMap(f -> this.getSubFolders(f))
                 .concatWith(Flowable.just(folder));
     }
 
     public void stop() {
-
+        this.model.getStop().set(true);
     }
 
 
