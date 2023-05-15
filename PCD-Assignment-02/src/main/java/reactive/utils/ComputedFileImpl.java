@@ -45,8 +45,9 @@ public class ComputedFileImpl {
     public Map<Pair<Integer, Integer>, Integer> getFilesInRange() {
         return filesInRange;
     }
-
-    public void addAll(SynchronizedList results) {
-        computedFiles.addAll(results.getResults());
+    public ComputedFileImpl accumulate(Pair<String, Integer> elem) {
+        this.add(elem);
+        return this;
     }
+
 }

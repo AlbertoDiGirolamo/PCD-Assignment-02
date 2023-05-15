@@ -1,20 +1,11 @@
 package reactive.model;
 
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.FlowableEmitter;
 import io.reactivex.rxjava3.core.ObservableEmitter;
 import reactive.controller.Controller;
-import reactive.controller.ControllerImpl;
 import reactive.utils.Pair;
-import reactive.utils.SynchronizedList;
-import vt.model.FolderSearchVT;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.RecursiveTask;
 
 public class FolderSearchTask implements Runnable{
     private final Folder folder;

@@ -1,20 +1,17 @@
 package reactive.controller;
 
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.parallel.ParallelFlowable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import reactive.SourceAnalyser;
 import reactive.model.Folder;
-import reactive.model.FolderSearchTask;
 import reactive.model.Model;
 import reactive.utils.ComputedFileImpl;
 import reactive.utils.Pair;
-import reactive.utils.SynchronizedList;
 import reactive.view.View;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class ControllerImpl implements Controller, SourceAnalyser {
     private final Model model;
@@ -27,37 +24,45 @@ public class ControllerImpl implements Controller, SourceAnalyser {
     }
 
     @Override
-    public void getReport(String path, int topN, int maxL, int numIntervals) throws IOException, ExecutionException, InterruptedException {
-        this.model.setup(topN, maxL, numIntervals);
-        Folder folder = Folder.fromDirectory(new File(path));
+    public Single<ComputedFileImpl> getReport(String path, int topN, int maxL, int numIntervals){
+        //this.model.setup(topN, maxL, numIntervals);
 
-        Observable<Pair<String, Integer>> source = Observable.create(emitter -> {
-            Thread initThread = new Thread(new FolderSearchTask(folder, this, emitter));
-            initThread.start();
-        });
+        ComputedFileImpl emptyResult = new ComputedFileImpl(topN, maxL, numIntervals);
 
-        source.subscribe((p) ->{
-            this.addResult(p);
-            if (p.getX().equals("endComputation") ){
-                this.view.endComputation();
-            }
-        });
+        return this.analyzeFolder(path)
+                .sequential() //Merge all the parallel flowable in a single one
+                .reduce(emptyResult, (result, af) -> result.accumulate(af));
     }
 
     @Override
-    public void analyzeSources(String path, int topN, int maxL, int numIntervals) throws IOException {
-        this.model.setup(topN, maxL, numIntervals);
-        Folder folder = Folder.fromDirectory(new File(path));
-        Observable<Pair<String, Integer>> source = Observable.create(emitter -> {
-            Thread initThread = new Thread( new FolderSearchTask(folder, this, emitter));
-            initThread.start();
-        });
+    public Flowable<ComputedFileImpl> analyzeSources(String path, int topN, int maxL, int numIntervals){
+       // this.model.resetStopExecution();
+        ComputedFileImpl result = new ComputedFileImpl(topN, maxL, numIntervals);
 
-        source.subscribe((p) ->{
-            this.addResult(p);
-        });
-
+        return this.analyzeFolder(path)
+                .sequential()//Merge all the parallel flowable in a single one
+                .map(af -> result.accumulate(af));
     }
+
+    private ParallelFlowable<Pair<String, Integer>> analyzeFolder(String folder){
+        return Flowable.just(folder)
+                .map(p -> Folder.fromDirectory(new File(p)))
+                .flatMap(f -> this.getSubFolders(f))
+                .subscribeOn(Schedulers.io())  //Execute the upstream operators on another Thread
+                .parallel()
+                .runOn(Schedulers.computation()) //Execute each parallel computation on a different Thread
+                .flatMap(f -> Flowable.fromIterable(f.getDocuments()))
+                .map(d -> new Pair<>(d.getPath(), d.countNumLines()));
+    }
+
+    private Flowable<Folder> getSubFolders(Folder folder){
+        return Flowable
+                .fromIterable(folder.getSubFolders())
+                //.skipWhile(af -> this.model.getStopExecution().get())
+                .flatMap(f -> this.getSubFolders(f))
+                .concatWith(Flowable.just(folder));
+    }
+
 
     @Override
     public ComputedFileImpl getResult() {
