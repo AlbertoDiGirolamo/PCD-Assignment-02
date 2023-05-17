@@ -2,18 +2,17 @@ package vt.controller;
 
 import vt.SourceAnalyser;
 import vt.model.Folder;
-import vt.model.FolderSearchVT;
+import vt.model.FolderSearchTask;
 import vt.model.Model;
 import vt.utils.ComputedFileImpl;
 import vt.utils.Pair;
-import vt.utils.SynchronizedList;
 import vt.view.View;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class Controller implements SourceAnalyser {
     private final Model model;
@@ -31,10 +30,11 @@ public class Controller implements SourceAnalyser {
         CompletableFuture<Void> computationEnd = new CompletableFuture<>();
         this.model.setup(topN, maxL, numIntervals);
         Folder folder = Folder.fromDirectory(new File(path));
+
         Thread.ofVirtual().start(() -> {
             Thread initThread = null;
             try {
-                initThread = Thread.ofVirtual().unstarted(new FolderSearchVT(folder, this));
+                initThread = Thread.ofVirtual().unstarted(new FolderSearchTask(folder, this));
                 initThread.start();
                 initThread.join();
                 computationEnd.complete(null);
@@ -53,16 +53,9 @@ public class Controller implements SourceAnalyser {
         this.model.setup(topN, maxL, numIntervals);
         Folder folder = Folder.fromDirectory(new File(path));
 
-        Thread.ofVirtual().start(() -> {
-            try {
-                initThread = Thread.ofVirtual().unstarted(new FolderSearchVT(folder, this));
-                initThread.start();
-                initThread.join();
+        initThread = Thread.ofVirtual().unstarted(new FolderSearchTask(folder, this));
+        initThread.start();
 
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
 
     public ComputedFileImpl getResult() {

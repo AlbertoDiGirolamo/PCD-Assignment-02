@@ -12,6 +12,7 @@ import reactive.utils.Pair;
 import reactive.view.View;
 
 import java.io.File;
+import java.time.LocalTime;
 
 public class Controller implements SourceAnalyser {
     private final Model model;
@@ -25,8 +26,6 @@ public class Controller implements SourceAnalyser {
 
     @Override
     public Single<ComputedFileImpl> getReport(String path, int topN, int maxL, int numIntervals){
-        //this.model.setup(topN, maxL, numIntervals);
-
         ComputedFileImpl emptyResult = new ComputedFileImpl(topN, maxL, numIntervals);
 
         return this.analyzeFolder(path)

@@ -4,7 +4,6 @@ package vertx.model;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.EventBus;
 import vertx.controller.Controller;
 
 public class FolderSearchAgent extends AbstractVerticle {
@@ -25,6 +24,10 @@ public class FolderSearchAgent extends AbstractVerticle {
         numAgent += folder.getSubFolders().size();
         numAgent += folder.getDocuments().size();
 
+        vertx.eventBus().consumer("stop", message -> {
+            vertx.undeploy(context.deploymentID());
+        });
+
         for (Folder subFolder : folder.getSubFolders()) {
             FolderSearchAgent folderSearchAgent = new FolderSearchAgent(subFolder, controller, vertx);
             vertx.deployVerticle(folderSearchAgent).onComplete(event ->{
@@ -36,8 +39,8 @@ public class FolderSearchAgent extends AbstractVerticle {
         }
 
         for (Document document : folder.getDocuments()) {
-            DocumentCountLinesAgent documentCountLinesAgent = new DocumentCountLinesAgent(document, controller);
-            vertx.deployVerticle(documentCountLinesAgent).onComplete(event ->{
+            DocumentSearchAgent documentSearchAgent = new DocumentSearchAgent(document, controller);
+            vertx.deployVerticle(documentSearchAgent).onComplete(event ->{
                 numAgent--;
                 if(numAgent == 0){
                     startPromise.complete();

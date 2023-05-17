@@ -5,11 +5,11 @@ import vt.controller.Controller;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FolderSearchVT implements Runnable{
+public class FolderSearchTask implements Runnable{
     private final Folder folder;
     private Controller controller;
 
-    public FolderSearchVT(Folder folder, Controller controller) {
+    public FolderSearchTask(Folder folder, Controller controller) {
         super();
         this.folder = folder;
         this.controller = controller;
@@ -22,14 +22,14 @@ public class FolderSearchVT implements Runnable{
         List<Thread> threads = new ArrayList<>();
 
         for (Folder subFolder : folder.getSubFolders()) {
-            Thread subFolderThread = Thread.ofVirtual().unstarted(new FolderSearchVT(subFolder, controller));
+            Thread subFolderThread = Thread.ofVirtual().unstarted(new FolderSearchTask(subFolder, controller));
             subFolderThread.start();
             threads.add(subFolderThread);
 
         }
 
         for (Document document : folder.getDocuments()) {
-            Thread documentThread = Thread.ofVirtual().unstarted(new DocumentSearchVT(document, controller));
+            Thread documentThread = Thread.ofVirtual().unstarted(new DocumentSearchTask(document, controller));
             documentThread.start();
             threads.add(documentThread);
         }

@@ -11,15 +11,18 @@ import vertx.view.View;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalTime;
 
 public class Controller implements SourceAnalyser {
     private final Model model;
     private final View view;
+    private Vertx vertx;
 
     public Controller(Model model, View view){
         this.model = model;
         this.view = view;
         this.view.setController(this);
+        vertx = Vertx.vertx();
     }
 
     @Override
@@ -27,9 +30,7 @@ public class Controller implements SourceAnalyser {
         this.model.setup(topN, maxL, numIntervals);
         Folder folder = Folder.fromDirectory(new File(path));
 
-        Vertx vertx = Vertx.vertx();
         FolderSearchAgent folderSearchAgent = new FolderSearchAgent(folder, this, vertx);
-
         vertx.deployVerticle(folderSearchAgent).onComplete(res -> {
             this.view.endComputation();
         });
@@ -41,8 +42,7 @@ public class Controller implements SourceAnalyser {
         this.model.setup(topN, maxL, numIntervals);
         Folder folder = Folder.fromDirectory(new File(path));
 
-        Vertx vertx = Vertx.vertx();
-        vertx.deployVerticle(new FolderSearchAgent(folder, this, vertx), res -> this.view.endComputation());
+        vertx.deployVerticle(new FolderSearchAgent(folder, this, vertx));
     }
 
 
@@ -60,6 +60,7 @@ public class Controller implements SourceAnalyser {
     }
 
     public void stop() {
+        vertx.eventBus().publish("stop", "");
     }
 
 

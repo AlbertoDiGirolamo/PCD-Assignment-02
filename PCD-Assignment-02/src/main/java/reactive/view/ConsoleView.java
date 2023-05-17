@@ -6,6 +6,7 @@ import reactive.utils.Pair;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,6 +32,7 @@ public class ConsoleView implements View {
 
         AtomicBoolean computationEnded = new AtomicBoolean();
         controller.getReport(path, limit, maxL, numIntervals).subscribe((results) -> {
+            
             System.out.println("Ranking: ");
 
             for(Pair<String, Integer> p : results.getRanking()) {

@@ -11,6 +11,7 @@ import executors.view.View;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
@@ -30,8 +31,11 @@ public class Controller implements SourceAnalyser {
     public void getReport(String path, int topN, int maxL, int numIntervals) throws IOException, ExecutionException, InterruptedException {
         this.model.setup(topN, maxL, numIntervals);
         Folder folder = Folder.fromDirectory(new File(path));
+
         forkJoinPool.submit(new FolderSearchTask(folder, this)).join().get();
         this.view.endComputation();
+
+
     }
 
     @Override
