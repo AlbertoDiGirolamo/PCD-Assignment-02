@@ -10,8 +10,7 @@ public class FolderSearchAgent extends AbstractVerticle {
     private final Folder folder;
     private Controller controller;
     Vertx  vertx;
-
-    int numAgent =0;
+    int numAgent = 0;
 
     public FolderSearchAgent(Folder folder, Controller controller, Vertx vertx) {
         this.folder = folder;
@@ -25,7 +24,7 @@ public class FolderSearchAgent extends AbstractVerticle {
         numAgent += folder.getDocuments().size();
 
         vertx.eventBus().consumer("stop", message -> {
-            vertx.undeploy(context.deploymentID());
+            vertx.close();
         });
 
         for (Folder subFolder : folder.getSubFolders()) {

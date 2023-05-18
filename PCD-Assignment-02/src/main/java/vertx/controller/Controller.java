@@ -22,13 +22,14 @@ public class Controller implements SourceAnalyser {
         this.model = model;
         this.view = view;
         this.view.setController(this);
-        vertx = Vertx.vertx();
+
     }
 
     @Override
     public void getReport(String path, int topN, int maxL, int numIntervals) throws IOException {
         this.model.setup(topN, maxL, numIntervals);
         Folder folder = Folder.fromDirectory(new File(path));
+        vertx = Vertx.vertx();
 
         FolderSearchAgent folderSearchAgent = new FolderSearchAgent(folder, this, vertx);
         vertx.deployVerticle(folderSearchAgent).onComplete(res -> {
@@ -41,6 +42,7 @@ public class Controller implements SourceAnalyser {
     public void analyzeSources(String path, int topN, int maxL, int numIntervals) throws IOException {
         this.model.setup(topN, maxL, numIntervals);
         Folder folder = Folder.fromDirectory(new File(path));
+        vertx = Vertx.vertx();
 
         vertx.deployVerticle(new FolderSearchAgent(folder, this, vertx));
     }
@@ -62,6 +64,5 @@ public class Controller implements SourceAnalyser {
     public void stop() {
         vertx.eventBus().publish("stop", "");
     }
-
 
 }

@@ -10,7 +10,6 @@ import java.util.concurrent.Future;
 
 public class ModelImpl implements Model {
     private ComputedFileImpl results;
-    private CompletableFuture<Void> stopExecution;
 
     public void setup(int limit, int maxL, int numIntervals) {
         this.results = new ComputedFileImpl(limit, maxL, numIntervals);
@@ -24,12 +23,14 @@ public class ModelImpl implements Model {
     }
 
     @Override
+    public CompletableFuture<String> getStopExecution() {
+        return null;
+    }
+
+    @Override
     public ComputedFileImpl getResult() {
         return results;
     }
 
-    public CompletableFuture<Void> getStopExecution(){
-        return this.stopExecution;
-    }
 
 }

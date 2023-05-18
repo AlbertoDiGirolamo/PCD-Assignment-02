@@ -4,10 +4,12 @@ import vt.controller.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class FolderSearchTask implements Runnable{
     private final Folder folder;
     private Controller controller;
+
 
     public FolderSearchTask(Folder folder, Controller controller) {
         super();

@@ -13,5 +13,5 @@ public interface Model {
 
     void addResults(Future<SynchronizedList> results) throws ExecutionException, InterruptedException;
 
-    CompletableFuture<Void> getStopExecution();
+    CompletableFuture<String> getStopExecution();
 }

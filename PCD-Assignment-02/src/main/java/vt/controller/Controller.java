@@ -69,7 +69,6 @@ public class Controller implements SourceAnalyser {
     }
 
     public void stop(){
-        this.model.getStopExecution().complete(null);
     }
 
 

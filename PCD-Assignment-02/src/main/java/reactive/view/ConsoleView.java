@@ -32,7 +32,7 @@ public class ConsoleView implements View {
 
         AtomicBoolean computationEnded = new AtomicBoolean();
         controller.getReport(path, limit, maxL, numIntervals).subscribe((results) -> {
-            
+
             System.out.println("Ranking: ");
 
             for(Pair<String, Integer> p : results.getRanking()) {
